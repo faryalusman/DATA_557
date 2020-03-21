@@ -58,6 +58,44 @@ Hence, there are two main motivations for our research:
 1. We would like to understand if local food choices have an impact on the obesity rate in the U.S. 
 2. We are also curious to see local food choices’ association with the national free lunch program’s enrollment rate. 
 
+# Dataset Description 
+Data we used in this analysis is survey data Food Environment Atlas Dataset, which is published by Economic Research Service, Department of Agriculture.
+We have access to this entire survey data which contains records from 2009 to 2016. There are 3100 rows and 275 variables in this dataset including indicators of access to grocery stores at sub-population level, recipients of Supplemental Security Income at the state level, social economics indicators, health indicators, and other indicators that contain data on how local food choices affect diet in the US. 
+Variables we used in these research:
+Local stores/ food choices:
+2009&2014 Convenience Store Availability (count per 1000 population)
+2009&2014 Fast-Food Restaurant Availability (count per 1000 population)
+2008&2012 WIC-Authorized Store Availability (count per 1000 population)
+2009&2014 Supercenters & Club Stores Availability (count per 1000 population)
+2009&2014 Specialized Food Store Availability (count per 1000 population)
+2009&2016 Farmers’ Market Availability (count per 1000 population)
+2009&2014 Grocery Store Availability (count per 1000 population)
+2009&2014 Recreation and Fitness Facility Availability (count per 1000 population)
+Obesity rate related: 
+2008&2013 Adult Obesity Rate (%)
+The national free lunch program related:
+2010 Price of Low-Fat Milk/National Average (ratio)
+2010 Low Access Adults (count per 1000 population)
+2010 Low Access Children (count per 1000 population)
+2013 Metropolitan Area Indicator
+2010 Persistent Poverty Indicator
+2010 Persistent Child Poverty Indicator
+2015 Child Poverty Rate (%)
+2007 Vegetable Acres Harvested (Acres per 1000 population)
+2010 SNAP Benefits (Dollars per capita)
+2008 WIC Redemptions (Dollars per capita)
+
+All the variables listed above are at the county level. However, for some of our problems, we also analyzed our data at the state level as well. Also, we tried to select all the variables per capita or per 1000 population, as we know that this data is highly correlated with the population.
+
+## Data Limitations
+Although the survey data we have is very rich, it does not provide us data for every year. For example, it only provides us the county level obesity rate for the year 2008 and 2013. Such limitations forced us to narrow down our research question to focus on obesity rate for only those two years. We face the same limitation with variables for local food choices as well as the national free lunch program related variables. We only have the data for national free lunch program eligibility for the year 2009. Therefore, the scale of our analysis is limited to these years due to the lack of data. 
+
+## Incomplete and missing value
+Originally we intended to consider more local food choices such as the berry farm and orchard farm in our analysis. However, there are too many missing values at the county level. Thus we decided to not use those variables. There are not many other missing values in the variables of our choice, and we just simply dropped the observations that contain null values. Plus, for the obesity rate problem, we aggregated all the county-level data to calculate the state-level data. If time permits in the future, we will probably conduct a more detailed research using county-level data on the obesity problem. 
+
+Summary statistics of all the local stores/ food choices variables (on county level):
+
+
 # Question 2: Are local food choices associated with the Obesity rates? 
 
 	
