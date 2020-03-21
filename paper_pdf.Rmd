@@ -389,11 +389,71 @@ larger values where the predictions get more extreme. This shows an error with t
 ## Model Fitting: Poisson regression 
 Now we are interested in seeing the relationship with the same independent variables but with the dependent variable of Count of eligibility of students in the Free Lunch Program per thousand. As our histogram for this variable showed right-skewed data like many Poisson distributions, we decide to use the Poisson generalized linear model.
 
-```{r, include = FALSE}
+```{r, include= FALSE}
 subset_2 <- data[c(6:11, 13:14, 16:17, 19:22, 24, 26:28)]
-poisson_reg <- glm(subset_2$`Students eligible for FLP per thousand` ~ . )
+poisson_reg <- glm(`Students eligible for FLP per thousand` ~ ., data  = subset)
+summary(poisson_reg)
 ```
-
+```{r, include = FALSE}
+stargazer::stargazer(poisson_reg, single.row = FALSE, no.space = TRUE)
+```
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-2} 
+\\[-1.8ex] & `Students eligible for FLP per thousand` \\ 
+\hline \\[-1.8ex] 
+ `Grocery stores per thousand` & $-$1.055 \\ 
+  & (1.014) \\ 
+  `Supercenters per thousand` & $-$19.318$^{*}$ \\ 
+  & (10.034) \\ 
+  `Convenience stores per thousand` & $-$0.256 \\ 
+  & (0.713) \\ 
+  `Specialized stores per thousand` & 1.603 \\ 
+  & (2.765) \\ 
+  `Fast food restaurants per thousand` & 0.762 \\ 
+  & (0.758) \\ 
+  `Full service restaurants per thousand` & $-$1.383$^{***}$ \\ 
+  & (0.437) \\ 
+  `\% of students eligible for FLP` & 2.489$^{***}$ \\ 
+  & (0.024) \\ 
+  `Per capita WIC redemptions` & 0.417$^{***}$ \\ 
+  & (0.028) \\ 
+  `Per capita SNAP benefits` & 0.354$^{***}$ \\ 
+  & (0.041) \\ 
+  `Acres of vegetables harvested per thousand` & 0.005$^{***}$ \\ 
+  & (0.001) \\ 
+  `Recreation facilities per thousand` & $-$5.774$^{**}$ \\ 
+  & (2.755) \\ 
+  `Persistent Poverty indicator` & 2.141$^{**}$ \\ 
+  & (0.847) \\ 
+  `Child Poverty rate` & $-$0.683$^{***}$ \\ 
+  & (0.051) \\ 
+  `Persistent Child Poverty Indicator` & 1.382$^{**}$ \\ 
+  & (0.698) \\ 
+  `Metropolitan Area indicator` & 0.379 \\ 
+  & (0.466) \\ 
+  `Milk price in cents` & $-$0.091$^{***}$ \\ 
+  & (0.018) \\ 
+  `Low access adults per thousand` & $-$0.143$^{***}$ \\ 
+  & (0.004) \\ 
+  `Low access children per thousand` & 0.645$^{***}$ \\ 
+  & (0.016) \\ 
+  Constant & 3.149$^{*}$ \\ 
+  & (1.844) \\ 
+ \hline \\[-1.8ex] 
+Observations & 3,065 \\ 
+Log Likelihood & $-$11,590.200 \\ 
+Akaike Inf. Crit. & 23,218.410 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
 
 This seems like a good opportunity to use the Poisson generalized linear model. THis 
 
