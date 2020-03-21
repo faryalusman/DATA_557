@@ -64,8 +64,8 @@ We assess the plot of residuals vs fitted values, and it shows clear evidence of
 par(mfrow=c(1,2),mar=c(5,4,4,1))
 fit2=lm(PCT_OBESE_ADULTS08~ GROCPTH09 +SUPERCPTH09 +CONVSPTH09  + SPECSPTH09 + WICSPTH08 +FFRPTH09 + FMRKTPTH09 + RECFACPTH09, data = food)
 scatter.smooth(fit2$fitted.values,fit2$residuals,cex=0.5,col="gray")
-qqnorm(fit$residuals)
-qqline(fit$residuals)
+qqnorm(fit2$residuals)
+qqline(fit2$residuals)
 ```
 
 ```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
@@ -150,7 +150,7 @@ ggplot2::ggplot(data = data, aes(x=`% of students eligible for FLP`))+
 ```
 We can see that the histogram is not exactly normal but not so far off that we cannot attempt the regression. 
 
-We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per hundred thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (available through census data via the Food Environment Atlas) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population and multiply by 100,000 to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
+We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (available through census data via the Food Environment Atlas) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population and multiply by 1000 to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
 
 ```{r, warning = FALSE, echo  = FALSE}
 # ggplot of school lunch eligibility in percent data 
@@ -160,7 +160,7 @@ ggplot2::ggplot(data = data, aes(x=data$`Students eligible for FLP per thousand`
 
 This also seems like highly skewed data, which is expected as there will be some outlier counties with more than the usual amount of resources dedicated to the program and thus having close to all of the school-going population eligible for the free lunch program. 
 
-Based on the comparison of the two histograms, we decide to proceed with the first dependent and attempt a linear regression. Before we jump into regression we should analyze the variables and make sure there is not too much data missing. 
+We decide to proceed with a linear regression on the Percent Eligibility of the Free Lunch Program. Before we jump into regression we should analyze the variables and make sure there is not too much data missing. 
 
 ```{r, include = FALSE}
 subset <- data[c(6:14, 16:17, 19:22, 24:28)]
@@ -387,7 +387,15 @@ While the residuals look as if they are largely following the assumption of cons
 larger values where the predictions get more extreme. This shows an error with the model assumptions. In addition, the quantile-quantile plot's deviating tails indicate the presence of non-normality in error residuals as well. While the latter can be accepted if we consider our sample to be large enough, the former violates the validity of the model
 
 ## Model Fitting: Poisson regression 
-Now we are interested in seeing the relationship with the same independent variables but with the dependent variable of Count Eligi
+Now we are interested in seeing the relationship with the same independent variables but with the dependent variable of Count of eligibility of students in the Free Lunch Program per thousand. As our histogram for this variable showed right-skewed data like many Poisson distributions, we decide to use the Poisson generalized linear model.
+
+```{r, include = FALSE}
+subset_2 <- data[c(6:11, 13:14, 16:17, 19:22, 24, 26:28)]
+poisson_reg <- glm(subset_2$`Students eligible for FLP per thousand` ~ . )
+```
+
+
+This seems like a good opportunity to use the Poisson generalized linear model. THis 
 
 # End of writeup
 ------------------------------------------------------------------------------------------------------
