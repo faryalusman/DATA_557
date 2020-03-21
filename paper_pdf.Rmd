@@ -47,8 +47,50 @@ data <- data[-c(23,24)]
 	
 ### Are the food source variables associated with the obesity rates in 2008/09? 
 
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & Estimate & Std. Error & t value & Pr(\textgreater \textbar t\textbar ) & robust.se \\ 
+\hline \\[-1.8ex] 
+(Intercept) & $30.238$ & $0.195$ & $155.211$ & $0$ & $0.226$ \\ 
+GROCPTH09 & $$-$1.748$ & $0.348$ & $$-$5.021$ & $0$ & $0.449$ \\ 
+SUPERCPTH09 & $22.895$ & $3.077$ & $7.440$ & $0$ & $2.885$ \\ 
+CONVSPTH09 & $1.586$ & $0.204$ & $7.767$ & $0$ & $0.278$ \\ 
+SPECSPTH09 & $$-$6.068$ & $0.829$ & $$-$7.322$ & $0$ & $0.744$ \\ 
+WICSPTH08 & $0.932$ & $0.310$ & $3.006$ & $0.003$ & $0.492$ \\ 
+FFRPTH09 & $$-$2.203$ & $0.220$ & $$-$10.034$ & $0$ & $0.272$ \\ 
+FMRKTPTH09 & $$-$2.013$ & $0.898$ & $$-$2.243$ & $0.025$ & $1.045$ \\ 
+RECFACPTH09 & $$-$9.349$ & $0.830$ & $$-$11.261$ & $0$ & $1.047$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
 
 ### Are the food source variables associated with the obesity rates in 2013/14? 
+
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & Estimate & Std. Error & t value & Pr(\textgreater \textbar t\textbar ) & robust.se \\ 
+\hline \\[-1.8ex] 
+(Intercept) & $32.009$ & $0.239$ & $134.110$ & $0$ & $0.266$ \\ 
+GROCPTH14 & $$-$4.417$ & $0.431$ & $$-$10.242$ & $0$ & $0.554$ \\ 
+SUPERCPTH14 & $23.340$ & $3.261$ & $7.157$ & $0$ & $3.366$ \\ 
+CONVSPTH14 & $1.718$ & $0.241$ & $7.124$ & $0$ & $0.340$ \\ 
+SPECSPTH14 & $$-$6.487$ & $1.009$ & $$-$6.427$ & $0$ & $1.211$ \\ 
+WICSPTH12 & $3.247$ & $0.442$ & $7.344$ & $0$ & $0.541$ \\ 
+FFRPTH14 & $$-$2.297$ & $0.254$ & $$-$9.039$ & $0$ & $0.282$ \\ 
+FMRKTPTH16 & $$-$2.484$ & $0.754$ & $$-$3.294$ & $0.001$ & $0.744$ \\ 
+RECFACPTH14 & $$-$11.157$ & $1.069$ & $$-$10.433$ & $0$ & $1.189$ \\ 
+FOOD\_TAX14 & $0.446$ & $0.036$ & $12.307$ & $0$ & $0.036$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
 
 The following are the assumptions of the two linear regressions we used:
 Independence:
