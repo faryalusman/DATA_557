@@ -1,5 +1,10 @@
 ---
-title: "paper_pdf"
+title: "An Analysis on the Impact of Local Food Choices"
+author:
+- name: Shuya Ma
+- name: Xiaolu Qian 
+- name: Qinglang Ye
+- name: Faryal Usman
 output:
   pdf_document: default
   word_document: default
@@ -41,6 +46,17 @@ data <- sqldf::sqldf("SELECT * FROM prepared_data
 data <- data[-c(23,24)]
 
 ```
+
+# Abstract
+
+# Introduction
+“More than one-third (36.5%) of the U.S. adult population suffer from obesity. The estimated annual medical cost of obesity in the U.S. was $147 billion in 2008.” (source: CDC) The number even increased in recent years. “The prevalence of obesity was 42.4% in 2017-2018.” (source: CDC) Clearly, Obesity is a major health issue resulting in numerous diseases and threatening people’s lives in the United States. We understand that food source is a very crucial part in our life which may directly affect our health. Therefore, we are curious to see if there is a relationship between food choices and obesity in the United States. 
+
+The National School Lunch Program (NSLP) was established under the National School Lunch Act (NSLA) in 1946. It is a federally assisted meal program providing nutritionally balanced lunch, free or at a reduced price, to more than 30 million students in public and nonprofit schools across the country (U.S. Department of Agriculture Food and Nutrition Service, 2018b). Therefore, we would also like to investigate if the national free lunch program’s enrollment rate is associated with the local food choices.
+
+Hence, there are two main motivations for our research:
+1. We would like to understand if local food choices have an impact on the obesity rate in the U.S. 
+2. We are also curious to see local food choices’ association with the national free lunch program’s enrollment rate. 
 
 # Question 2: Are local food choices associated with the Obesity rates? 
 
