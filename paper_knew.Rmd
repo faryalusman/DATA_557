@@ -1,0 +1,609 @@
+---
+title: "An Analysis on the Impact of Local Food Choices"
+author:
+- name: Shuya Ma
+- name: Xiaolu Qian 
+- name: Qinglang Ye
+- name: Faryal Usman
+output:
+  pdf_document: default
+  word_document: default
+tables: yes 
+---
+
+
+```{r setup, include=FALSE}
+library("ggplot2")
+library("naniar")
+library("MASS")
+library("readxl")
+library("sqldf")
+library("xtable")
+library("sqldf")
+library("readr")
+library("stargazer")
+library("sandwich")
+library("lmtest")
+library("ggplot2")
+library("lindia")
+library("survey")
+
+prepared_data <- read_csv("data/prepared_data.csv", 
+    col_types = cols(CHILDPOVRATE15 = col_number(), 
+        CONVSPTH09 = col_number(), FFRPTH09 = col_number(), 
+        FSRPTH09 = col_number(), GROCPTH09 = col_number(), 
+        LACCESS_CHILD10 = col_number(), LACCESS_POP10 = col_number(), 
+        METRO13 = col_number(), MILK_PRICE10 = col_number(), 
+        PCT_18YOUNGER10 = col_number(), PCT_FREE_LUNCH09 = col_number(), 
+        PC_SNAPBEN10 = col_number(), PC_WIC_REDEMP08 = col_number(), 
+        PERCHLDPOV10 = col_number(), PERPOV10 = col_number(), 
+        RECFACPTH09 = col_number(), SPECSPTH09 = col_number(), 
+        SUPERCPTH09 = col_number(), VEG_ACRESPTH07 = col_number()))
+food = read.csv("data/q1_and_q2.csv")
+census <- read_csv("data/census.csv")
+data <- sqldf::sqldf("SELECT * FROM prepared_data 
+              JOIN census
+              USING(FIPS)")
+data <- data[-c(23,24)]
+
+```
+
+# Abstract
+
+# Introduction
+“More than one-third (36.5%) of the U.S. adult population suffer from obesity. The estimated annual medical cost of obesity in the U.S. was $147 billion in 2008.” (source: CDC) The number even increased in recent years. “The prevalence of obesity was 42.4% in 2017-2018.” (source: CDC) Clearly, Obesity is a major health issue resulting in numerous diseases and threatening people’s lives in the United States. We understand that food source is a very crucial part in our life which may directly affect our health. Therefore, we are curious to see if there is a relationship between food choices and obesity in the United States. 
+
+The National School Lunch Program (NSLP) was established under the National School Lunch Act (NSLA) in 1946. It is a federally assisted meal program providing nutritionally balanced lunch, free or at a reduced price, to more than 30 million students in public and nonprofit schools across the country (U.S. Department of Agriculture Food and Nutrition Service, 2018b). Therefore, we would also like to investigate if the national free lunch program’s enrollment rate is associated with the local food choices.
+
+Hence, there are two main motivations for our research:
+1. We would like to understand if local food choices have an impact on the obesity rate in the U.S. 
+2. We are also curious to see local food choices’ association with the national free lunch program’s enrollment rate. 
+
+# Dataset Description 
+Data we used in this analysis is survey data Food Environment Atlas Dataset, which is published by Economic Research Service, Department of Agriculture.
+We have access to this entire survey data which contains records from 2009 to 2016. There are 3100 rows and 275 variables in this dataset including indicators of access to grocery stores at sub-population level, recipients of Supplemental Security Income at the state level, social economics indicators, health indicators, and other indicators that contain data on how local food choices affect diet in the US. 
+
+Variables we used in this research:
+
+Local stores/ food choices:
+  - 2009&2014 Convenience Store Availability (count per 1000 population)
+  - 2009&2014 Fast-Food Restaurant Availability (count per 1000 population)
+  - 2008&2012 WIC-Authorized Store Availability (count per 1000 population)
+  - 2009&2014 Supercenters & Club Stores Availability (count per 1000 population)
+  - 2009&2014 Specialized Food Store Availability (count per 1000 population)
+  - 2009&2016 Farmers’ Market Availability (count per 1000 population)
+  - 2009&2014 Grocery Store Availability (count per 1000 population)
+  - 2009&2014 Recreation and Fitness Facility Availability (count per 1000 population)
+
+Obesity rate related: 
+
+  - 2008&2013 Adult Obesity Rate (%)
+  - The national free lunch program related:
+  - 2010 Price of Low-Fat Milk/National Average (ratio)
+  - 2010 Low Access Adults (count per 1000 population)
+  - 2010 Low Access Children (count per 1000 population)
+  - 2013 Metropolitan Area Indicator
+  - 2010 Persistent Poverty Indicator
+  - 2010 Persistent Child Poverty Indicator
+  - 2015 Child Poverty Rate (%)
+  - 2007 Vegetable Acres Harvested (Acres per 1000 population)
+  - 2010 SNAP Benefits (Dollars per capita)
+  - 2008 WIC Redemptions (Dollars per capita)
+
+All the variables listed above are at the county level. However, for some of our problems, we also analyzed our data at the state level as well. Also, we tried to select all the variables per capita or per 1000 population, as we know that this data is highly correlated with the population.
+
+## Data Limitations
+Although the survey data we have is very rich, it does not provide us data for every year. For example, it only provides us the county level obesity rate for the year 2008 and 2013. Such limitations forced us to narrow down our research question to focus on obesity rate for only those two years. We face the same limitation with variables for local food choices as well as the national free lunch program related variables. We only have the data for national free lunch program eligibility for the year 2009. Therefore, the scale of our analysis is limited to these years due to the lack of data. 
+
+## Incomplete and missing value
+Originally we intended to consider more local food choices such as the berry farm and orchard farm in our analysis. However, there are too many missing values at the county level. Thus we decided to not use those variables. There are not many other missing values in the variables of our choice, and we just simply dropped the observations that contain null values. Plus, for the obesity rate problem, we aggregated all the county-level data to calculate the state-level data. If time permits in the future, we will probably conduct a more detailed research using county-level data on the obesity problem. 
+
+## Summary statistics of all the local stores/ food choices variables (on county level)
+```{r, my-fig,out.width = '80%', fig.cap = "descriptive statistics", echo = FALSE}
+knitr::include_graphics('images/descriptive_food/descriptive.png')
+```
+
+As can be seen from the table, Convenience stores got very high values of availabilities per capita, while Supercenters & Club Stores, Specialized Food Stores and Farmers’ Markets got relatively low values.
+
+## Trends of local stores/ food choices
+Convenience Store (rest of food choices in appendix): 
+```{r, my-fig2,out.width = '90%',echo = FALSE,fig.cap = "convenience store map"}
+knitr::include_graphics('images/tableau_food/1/Dashboard 1.png')
+```
+
+```{r, my-fig3,out.width = '90%',echo = FALSE,fig.cap = "convenience store trend"}
+knitr::include_graphics('images/tableau_food/1/Dashboard 2.png')
+```
+
+# Statistical Methods
+## Are local food choices associated with the Obesity rates? 
+Based on the boxplot below, there is a clear trend of an increasing median and range of obesity rate in the US. Therefore, we first want to determine if there is a significant difference in adult obesity rate between 2008 and 2013. To answer this question, we performed a two sample paired t-test, since we only have two years’ of data for each state. There are no extreme outliers and due to the large sample size, the obesity rates are approximately normally distributed, so the assumptions of paired t-test are met. 
+
+```{r, my-fig4,out.width = '90%',echo = FALSE,fig.cap = "Obesity rate 2008 and 2013"}
+knitr::include_graphics('images/descriptive_food/obesity.png')
+```
+
+Are the food source variables associated with the obesity rates in 2008/09? 
+
+Due to the limitation that we only have data for 2008 and 2013, time-series analysis is not applicable, so we could only perform linear models on these two years independently. The dataset contains three versions of all the variables, the absolute counts in each year, count per thousand capita in each year and the percentage change from 2008 to 2013. We first ran models on both counts and percentages of access to food choices per 1000 population. However, since the access to stores is highly correlated to the state population, we decided to use only the percentage model in our research questions.  
+For the first question, the response variable is obesity rate in 2008, and the predictor variables are the following food stores and facilities in each state: grocery stores, convenience stores, fast-food restaurants, WIC-authorized stores, supercenters & club stores, specialized food stores, farmers' markets, recreation & fitness facilities. 
+We then assessed the model assumptions using residual vs fitted plot and QQ plot, which shows a violation of constant variance but an acceptable level of residual normality.  
+
+Are the food source variables associated with the obesity rates in 2013/14? 
+We ran the same regression model on obesity rate with all the predictor variables mentioned above, instead using data in 2014. As we have more data in 2014, we also add a new variable food tax to check if there is any confounding effect of taxes on the access to food choices. 
+
+
+The following are the assumptions of linear regressions we used:
+Independence: 
+The county level data we used do not come froma simple rample sample. Thus we have to assume the independence in our data. 
+
+Normality:
+We have county level observations of over 3000 rows. As this value is relatively large, the central limit theorem will take effect and the non-normality does not matter. We also checked the residual qq plot for normality.  
+
+Constant Variance for obesity rate:
+We assess the plots of residuals vs fitted values of our linear models, and they show clear evidence of non-constant variance. The first plot is the residual plot for obesity rate in 2008/09, and the second plot is for obesity rate in 2013/14. There is clearly a pattern of residuals that is undesirable to us. We used robust standard error to try to correct the non-constant variance problem.
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit2=lm(PCT_OBESE_ADULTS08~ GROCPTH09 +SUPERCPTH09 +CONVSPTH09  + SPECSPTH09 + WICSPTH08 +FFRPTH09 + FMRKTPTH09 + RECFACPTH09, data = food)
+scatter.smooth(fit2$fitted.values,fit2$residuals,cex=0.5,col="gray")
+qqnorm(fit2$residuals)
+qqline(fit2$residuals)
+```
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit=lm(PCT_OBESE_ADULTS13~ GROCPTH14 +SUPERCPTH14 +CONVSPTH14  + SPECSPTH14 + WICSPTH12 +FFRPTH14 + FMRKTPTH16 + RECFACPTH14 +FOOD_TAX14, data = food)
+scatter.smooth(fit$fitted.values,fit$residuals,cex=0.5,col="gray")
+qqnorm(fit$residuals)
+qqline(fit$residuals)
+```
+
+#  Results
+The results of our analyses for the five questions posed are detailed below.
+### Are local food choices associated with the Obesity rates? 
+###T-test result:
+t = 58.258, df = 3136, p-value < 2.2e-16
+alternative hypothesis: true difference in mean obesity rate between 2008 and 2013 is not equal to 0
+95 percent confidence interval:
+ 1.285081 1.374594
+mean of the differences = 1.329837
+
+At the significance level of 0.05, the confidence interval of difference in means does not include 0. Additionally, the p-value of this test is smaller than 0.05, so we can reject the null hypothesis and state that there is evidence showing a significant increase of around 1.33% in adult obesity rate from 2008 to 2013.
+
+	
+### Question 1: Are the food source variables associated with the obesity rates in 2008/09? 
+
+The per capita access to all the food sources and fitness facilities have a significant impact on 2008 adult obesity rate. More specifically, access to super centers, convenience stores and WIC-authorized stores is positively associated with obesity rate while the rest of the predictors have a negative effect.  
+
+### Question 2: Are the food source variables associated with the obesity rates in 2013/14? 
+Similar to the first model, all the variables in the 2013 model are significant and of the same sign as before. Food tax is also positively related to the obesity rate.
+After using robust standard error to correct for the non-constant variance, our results still show significant outcomes. From 2008 to 2013, the influence of predictors also grew, which is shown by the increase in absolute value of estimated betas for each independent variable. 
+
+The following are the assumptions of the two linear regressions we used:
+
+  - Independence:
+A common assumption across all inferential tests is that the observations in the sample are independent from each other. 
+  - Normality:
+We have county level observations of over 3000 rows. As this value is relatively large, the central limit theorem will take effect and the non-normality does not matter. We also checked the residual qq plot for normality.  
+  - Constant Variance for obesity rate:
+We assess the plot of residuals vs fitted values, and it shows clear evidence of non-constant variance. There is clearly a pattern of residuals that is undesirable to us. We used robust standard error to try to correct the non-constant variance problem.
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit2=lm(PCT_OBESE_ADULTS08~ GROCPTH09 +SUPERCPTH09 +CONVSPTH09  + SPECSPTH09 + WICSPTH08 +FFRPTH09 + FMRKTPTH09 + RECFACPTH09, data = food)
+scatter.smooth(fit2$fitted.values,fit2$residuals,cex=0.5,col="gray")
+qqnorm(fit2$residuals)
+qqline(fit2$residuals)
+```
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit=lm(PCT_OBESE_ADULTS13~ GROCPTH14 +SUPERCPTH14 +CONVSPTH14  + SPECSPTH14 + WICSPTH12 +FFRPTH14 + FMRKTPTH16 + RECFACPTH14 +FOOD_TAX14, data = food)
+scatter.smooth(fit$fitted.values,fit$residuals,cex=0.5,col="gray")
+qqnorm(fit$residuals)
+qqline(fit$residuals)
+```
+
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & Estimate & Std. Error & t value & Pr(\textgreater \textbar t\textbar ) & robust.se \\ 
+\hline \\[-1.8ex] 
+(Intercept) & $32.009$ & $0.239$ & $134.110$ & $0$ & $0.266$ \\ 
+GROCPTH14 & $$-$4.417$ & $0.431$ & $$-$10.242$ & $0$ & $0.554$ \\ 
+SUPERCPTH14 & $23.340$ & $3.261$ & $7.157$ & $0$ & $3.366$ \\ 
+CONVSPTH14 & $1.718$ & $0.241$ & $7.124$ & $0$ & $0.340$ \\ 
+SPECSPTH14 & $$-$6.487$ & $1.009$ & $$-$6.427$ & $0$ & $1.211$ \\ 
+WICSPTH12 & $3.247$ & $0.442$ & $7.344$ & $0$ & $0.541$ \\ 
+FFRPTH14 & $$-$2.297$ & $0.254$ & $$-$9.039$ & $0$ & $0.282$ \\ 
+FMRKTPTH16 & $$-$2.484$ & $0.754$ & $$-$3.294$ & $0.001$ & $0.744$ \\ 
+RECFACPTH14 & $$-$11.157$ & $1.069$ & $$-$10.433$ & $0$ & $1.189$ \\ 
+FOOD\_TAX14 & $0.446$ & $0.036$ & $12.307$ & $0$ & $0.036$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 
+
+
+# Question 3: Are there any group of factors that predict eligibility in the school free lunch program.
+We are interested in predicting the eligibility of students for the Free Lunch Program. As we only have county-level child demographic data from the years 2009 - 2010, we will choose the Free Lunch Program eligibility data from 2009. There are lots of different families of variables that could determine eligibility. Some of these include:
+
+  -  Assistance : How much access to resources do vulnerable groups in the county have? Are there resources like SNAP (Supplemental Nutritional Assistance Program) benefits or WIC (Women, Infants, Children) benefits available?
+  -  Food source availability: How many stores and restaurants are in the county?
+  -  Socio-economic: Does the county suffer from signficant adult and/or child poverty rates.
+
+As the data is census level data, it does not seem to be completely randomly collected. Thus we are not aiming to make causal inferences from our analysis, rather understand the factors at play. 
+
+
+## Exploratory Data Analysis 
+Using multiple linear regression, we are interested in predicting the Percentage Eligibility of Students in the Free Lunch program (out of the total number of students attending school). The independent variables we are interested in are the following:
+
+  - a
+  - b
+  - c
+  - d
+  - e
+  - f
+  - g
+  - h
+  - i 
+  - j
+  - k
+  - l 
+
+
+
+```{r Renaming data, include = FALSE}
+names(data)[4:23] =
+  c("Number of People with Low Access, 2010", "Number of children with Low Access, 2010", "Grocery stores per thousand", "Supercenters per thousand", "Convenience stores per thousand", "Specialized stores per thousand", "Fast food restaurants per thousand", "Full service restaurants per thousand", "% of students eligible for FLP", "Per capita WIC redemptions", "Per capita SNAP benefits", "Milk price (dollars)", "Acres of vegetables harvested per thousand", "Recreation facilities per thousand", "% of population younger than 18", "Persistent Poverty indicator", "Child Poverty rate", "Persistent Child Poverty Indicator", "Metropolitan Area indicator", "Population in 2010")
+```
+
+```{r dimensions before , include = FALSE}
+dim(data) #3140
+```
+
+```{r, include = FALSE}
+data <- data[!is.na(data$`% of students eligible for FLP`), ]
+```
+
+```{r dimensions after removing NA, include = FALSE}
+dim(data) # 3065
+```
+
+```{r Creating variables, include = FALSE}
+#data$Pop_2010 <- gsub(",","",data$Pop_2010)
+#data$Pop_2010 <- as.integer(data$Pop_2010)
+```
+
+```{r,  include = FALSE}
+data$`Milk price in cents` = data$`Milk price (dollars)` * 100
+
+data$`Count Eligible for FLP` = (data$`% of students eligible for FLP`/100)*(data$`% of population younger than 18`/100)*data$`Population in 2010`
+data$`Students eligible for FLP per thousand` = (data$`Count Eligible for FLP` * 1000)/ data$`Population in 2010`
+data$`Low access adults per thousand` = (data$`Number of People with Low Access, 2010` * 1000) / data$`Population in 2010`
+data$`Low access children per thousand` = (data$`Number of children with Low Access, 2010`* 1000) / data$`Population in 2010`
+
+#data$`Students eligible for FLP per hundred thousand` = data$`Students eligible for FLP per thousand`*100000
+```
+
+### Data Preparation
+Initially, there are 3140 observations. However, we decide to remove observations that contain null values for Percent eligibility for the Free Lunch Program, our dependent variable. This reduces our observations to 3065. Before proceeding to model fitting, we will do some initial data exploration of our variables. 
+
+### Exploratory Data Analysis 
+Below we have the histogram of percent eligibiltiy in the free lunch program. While it does not follow a Gaussian distribution exactly, it seems to follow it roughly enough that we can attempt the regression. 
+```{r,  warning = FALSE, echo  = FALSE, message = FALSE, w}
+# ggplot of school lunch eligibility in percent data 
+ggplot2::ggplot(data = data, aes(x=`% of students eligible for FLP`))+
+  geom_histogram(color="darkblue", fill="lightblue") + labs(title = "Histogram of percentage eligiblity in free lunch program", x = "Pct. Eligibility in program", y = "Frequency") + theme_classic()
+```
+We can see that the histogram is not exactly normal but not so far off that we cannot attempt the regression. 
+
+We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (available through census data via the Food Environment Atlas) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population and multiply by 1000 to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
+
+```{r, warning = FALSE, echo  = FALSE}
+# ggplot of school lunch eligibility in percent data 
+ggplot2::ggplot(data = data, aes(x=data$`Students eligible for FLP per thousand`))+
+  geom_histogram(color="darkred", fill="pink") + labs(title = "Historam of count eligiblity in free lunch program per hundred thousand", x = "Count Eligibility in program", y = "Frequency") + theme_classic()
+```
+
+This also seems like highly skewed data, which is expected as there will be some outlier counties with more than the usual amount of resources dedicated to the program and thus having close to all of the school-going population eligible for the free lunch program. 
+
+We decide to proceed with a linear regression on the Percent Eligibility of the Free Lunch Program. Before we jump into regression we should analyze the variables and make sure there is not too much data missing. 
+
+```{r, include = FALSE}
+subset <- data[c(6:14, 16:17, 19:22, 24:28)]
+```
+
+```{r, echo = FALSE}
+gg_miss_var(subset)
+```
+From the above we can see the variables of Milk price, Per capita WIC redemptions, Acres of vegetables harvested, and Per capita SNAP benefits all have some missing values. We will replace these missing values with medians of the variables (imputing via mean may not be a good choice because these variables will likely be skewed). 
+
+```{r Imputing medians, include = FALSE}
+med_PC  = median(data$`Per capita SNAP benefits`, na.rm = TRUE)
+data$`Per capita SNAP benefits`[is.na(data$`Per capita SNAP benefits`)] <- med_PC
+
+
+med_WC  = median(data$`Per capita WIC redemptions`, na.rm = TRUE)
+data$`Per capita WIC redemptions`[is.na(data$`Per capita WIC redemptions`)] <- med_WC
+
+med_VG  = median(data$`Acres of vegetables harvested per thousand`, na.rm = TRUE)
+data$`Acres of vegetables harvested per thousand`[is.na(data$`Acres of vegetables harvested per thousand`)] <- med_VG
+
+med_milk = median(data$`Milk price in cents`, na.rm = TRUE)
+data$`Milk price in cents`[is.na(data$`Milk price in cents`)] <- med_milk
+
+```
+
+After accounting for the missing values, we also want to know which variables are closely related to Percent Eligibility of the Free Lunch Program. We can do this with a simple correlation heatmap.
+
+
+```{r fig.height = 10, fig.width = 10, echo = FALSE, message = FALSE}
+library(corrplot)
+subset <- data[c(6:14, 16:17, 19:22, 24,26:28)]
+
+M <- cor(subset)
+corrplot(M, type = "full", method  = "color", addrect = 3, mar = c(0,0,0,0), tl.cex = 1, cl.cex = 1, tl.col = "black")
+
+```
+Thus we can see that we expect there to be a fairly strong positive correlation between Percent Eligibility of the Free Lunch Program with per capita WIC redemptions and SNAP benefits, as well all the poverty variables. Thus we expect these variables to be significant in our regressions. 
+
+
+## Model Fitting: Linear Regression 
+We will attempt a linear regression with Percent of Students eligible for the Free Lunch Program as the dependent variable and the above variables listed as the independent variables. 
+
+```{r regression_one, include = FALSE}
+subset_1 <- data[c(6:14, 16:17, 19:22, 24,27:28)]
+linear_model_1 <- lm(subset_1$`% of students eligible for FLP`~ ., data = subset_1)
+#summary(linear_model_1)
+```
+
+
+```{r, warning = FALSE, include = FALSE}
+stargazer::stargazer(linear_model_1, single.row = FALSE, no.space = TRUE)
+
+```
+
+ However, we also have to keep in mind that we are not sure the model assumption of constant error variance will hold. Thus we will also report the robust standard error estimates of this model which provide unbiased standard error estimates. 
+ 
+
+```{r, warning = FALSE, include = FALSE}
+cov1  <- vcovHC(linear_model_1, type = "HC1")
+robust_se <- sqrt(diag(cov1))
+# Adjust F statistic 
+wald_results <- waldtest(linear_model_1, vcov = cov1)
+
+stargazer(linear_model_1, linear_model_1, type = "latex",
+          se        = list(NULL, robust_se),
+          omit.stat = "f",
+          add.lines = list(c("F Statistic (df = 3; 360)", "12.879***", "7.73***")), no.space = TRUE)
+```
+
+\begin{table}[!htbp] \centering 
+  \caption{} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-3} 
+\\[-1.8ex] & \multicolumn{2}{c}{`\% of students eligible for FLP`} \\ 
+\\[-1.8ex] & (1) & (2)\\ 
+\hline \\[-1.8ex] 
+ `Grocery stores per thousand` & $-$2.375$^{***}$ & $-$2.375$^{*}$ \\ 
+  & (0.758) & (1.280) \\ 
+  `Supercenters per thousand` & $-$3.443 & $-$3.443 \\ 
+  & (7.516) & (7.090) \\ 
+  `Convenience stores per thousand` & 1.696$^{***}$ & 1.696$^{**}$ \\ 
+  & (0.533) & (0.710) \\ 
+  `Specialized stores per thousand` & $-$2.975 & $-$2.975 \\ 
+  & (2.070) & (2.202) \\ 
+  `Fast food restaurants per thousand` & 0.556 & 0.556 \\ 
+  & (0.568) & (0.721) \\ 
+  `Full service restaurants per thousand` & $-$1.447$^{***}$ & $-$1.447$^{***}$ \\ 
+  & (0.326) & (0.514) \\ 
+  `Per capita WIC redemptions` & 0.120$^{***}$ & 0.120$^{***}$ \\ 
+  & (0.021) & (0.035) \\ 
+  `Per capita SNAP benefits` & 0.271$^{***}$ & 0.271$^{***}$ \\ 
+  & (0.030) & (0.040) \\ 
+  `Acres of vegetables harvested per thousand` & 0.002$^{***}$ & 0.002$^{***}$ \\ 
+  & (0.001) & (0.001) \\ 
+  `Recreation facilities per thousand` & $-$9.146$^{***}$ & $-$9.146$^{***}$ \\ 
+  & (2.057) & (2.237) \\ 
+  `Persistent Poverty indicator` & $-$0.101 & $-$0.101 \\ 
+  & (0.635) & (0.856) \\ 
+  `Child Poverty rate` & 1.025$^{***}$ & 1.025$^{***}$ \\ 
+  & (0.033) & (0.044) \\ 
+  `Persistent Child Poverty Indicator` & 2.898$^{***}$ & 2.898$^{***}$ \\ 
+  & (0.520) & (0.552) \\ 
+  `Metropolitan Area indicator` & $-$0.225 & $-$0.225 \\ 
+  & (0.349) & (0.382) \\ 
+  `Milk price in cents` & 0.064$^{***}$ & 0.064$^{***}$ \\ 
+  & (0.013) & (0.012) \\ 
+  `Low access adults per thousand` & $-$0.010$^{***}$ & $-$0.010$^{**}$ \\ 
+  & (0.003) & (0.004) \\ 
+  `Low access children per thousand` & 0.041$^{***}$ & 0.041$^{**}$ \\ 
+  & (0.012) & (0.019) \\ 
+  Constant & 4.498$^{***}$ & 4.498$^{***}$ \\ 
+  & (1.379) & (1.357) \\ 
+ \hline \\[-1.8ex] 
+F Statistic (df = 3; 360) & 12.879*** & 7.73*** \\ 
+Observations & 3,065 & 3,065 \\ 
+R$^{2}$ & 0.760 & 0.760 \\ 
+Adjusted R$^{2}$ & 0.758 & 0.758 \\ 
+Residual Std. Error (df = 3047) & 7.976 & 7.976 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
+Thus we can see that the following variables are significant using both the robust and the non-robust standard error option:
+
+  - Grocery Stores per thousand (negatively associated)
+  - Convenience stores per thousand (positively associated)
+  - Full service restaurants per thousand (negatively associated)
+  - Per capita WIC redemptions (positively associated)
+  - Per capita SNAP benefits (positively associated)
+  - Acres of vegetables harvested per thousand (positively associated)
+  - Recreation facilities per thousand (negatively associated)
+  - Child poverty rate (positively associated)
+  - Persistent child poverty indicator (positively associated)
+  - Milk price in cents (positively associated) 
+  - Number of low access adults per thousand (negatively associated) 
+  - Number of low access children per thousand (positively associated)
+
+### Coefficient Interpretation 
+As the model is a linear regression, interpretation is straightforward, with one unit increase in the independent variable corresponding with a (in this case) percent change in Percent Eligibility of Enrollment in the Free Lunch Program. The largest positive coefficient is of the Persistent Child Poverty indicator variable. Thus if a county faces persistent child poverty, the Percent Eligibility increases by 2.89 %. The largest negative coefficient is that of recreation facilities. If there is an increase of one recreation facility per thousand people, percent eligibility decreases by 9.14 %. This seems like a larger than usual effect, although one possible hypothesis is that areas with more recreation facilities may be richer and and thus have stricter eligibility requirements. However, this is just conjecture. 
+
+Out of the poverty variables, only child poverty rate and persistent child poverty indicator significant, with the latter having a larger coefficient. This indicates that the general poverty of the area is more useful in predicting the percent eligibility enrollment than the exact childhood poverty rate.
+
+Out of the store and restaurant availability variables, it seems that grocery stores and full service restaurants correspond with decreased eligiblity for the Free Lunch Program while the opposite is true for convenience stores. This may be because the former stores' abiity to provide nutrition to children may outweigh that of convenience stores. 
+
+Most of our variables are significant with this linear regression, bringing the Multiple R-squared to a 75.96% and adjusted R squared not far behind at 75.82%.
+
+### Model Evaulation: Hypothesis Test 
+We want to test the hypothesis that the above model is more useful than a null model. We can let our null hypothesis be $$H_{0} : \text{Model with no independent variables fits data better than linear regression model}$$
+
+
+reduced model in predicting the Percent Eligibility for the Free Lunch Program. We can let our null hypothesis be that 
+
+```{r, include = FALSE}
+null_model <- lm(subset_1$`% of students eligible for FLP` ~ 1)
+fit_model <- anova(null_model, linear_model_1)
+fit_model
+```
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrrrrr}
+  \hline
+ & Res.Df & RSS & Df & Sum of Sq & F & Pr($>$F) \\ 
+  \hline
+1 & 3064 & 806174.77 &  &  &  &  \\ 
+  2 & 3047 & 193832.11 & 17 & 612342.67 & 566.23 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+As the F statistic is large and the p value is smaller than our significance level of 0.05, we reject the null hypothesis. This means we find evidence that there is at least one predictor whose slope is not 0.
+
+Suppose we want to conduct another hypothesis test, this time letting the null model be just the predictors for the stores, restaurants, and vegetable harvests. We want to test whether these variables are better than our full regression. 
+
+\newpage
+
+$$H_{0} : \text{Model with only store, restaurant, and vegetable variables is a better predictor than our full model}$$
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrrrrr}
+  \hline
+ & Res.Df & RSS & Df & Sum of Sq & F & Pr($>$F) \\ 
+  \hline
+1 & 3058 & 681494.35 &  &  &  &  \\ 
+  2 & 3047 & 193832.11 & 11 & 487662.24 & 696.90 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+As the F statistic is large and the p value is smaller than our significance level of 0.05, we reject the null hypothesis. This means we find evidence that there is at least one predictor apart from the store and restaurant variables that makes our full regression a better predictor of Percent Eligibility of Enrollment. 
+
+However, we must be careful with making too many hypotheses as our probability of reaching a false positive or our type 1 error rate increases for every additional hypothesis we make.
+
+
+### Model Evaluation: Goodness of fit plots
+It is important to analzye the assumptions of linear regression and see if our model meets them. 
+
+```{r, echo = FALSE}
+resid_fit<-function(model){
+    p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
+    p1<-p1+stat_smooth(method="loess")+geom_hline(yintercept=0, col="red", linetype="dashed")
+    p1<-p1+xlab("Fitted values")+ylab("Residuals")
+    p1<-p1+ggtitle("Residual vs Fitted Plot")+theme_classic()
+    return(p1)
+}   
+
+res_v_fit = resid_fit(linear_model_1)
+res_v_fit
+```
+
+
+```{r, echo = FALSE}
+quant_plot <- gg_qqplot(linear_model_1, scale.factor = 1) + theme_classic()
+quant_plot
+```
+
+While the residuals look as if they are largely following the assumption of constant variance of residuals, there are still some outliers for larger values where the predictions get more extreme. This shows an error with the model assumptions. In addition, the quantile-quantile plot's deviating tails indicate the presence of non-normality in error residuals as well. While the latter can be accepted if we consider our sample to be large enough, the former violates the validity of the model
+
+
+  
+# Conclusion
+## Are local food choices associated with the Obesity rates? 
+The adult obesity rate in the US has a significant increase of 1.33% on average from 2008 to 2013. In both years, the access of food choices and fitness facilities per 1000 population, and taxes are highly correlated to the obesity rate: super centers, convenient stores, WIC-authorized store and food taxes have positive effects and grocery stores; specialized food stores, fast food restaurants, farmer’s markets and recreation and fitness facilities are negative associated with it. Besides, the effect of the same independent variable on obesity rate exaggerates from 2008 to 2013.
+
+# Discussion & Future Work
+Most of the results look reasonable to us, but the effect of access to fast food restaurants is different from our expectation. Intuitively, fast foods are the most high calories among all the food choices we have but the model shows a negative relation with obesity rates. We believe there should be other variables such as income, public welfare affecting the level of obesity rates, but due to the limitation of our dataset, we were not able to add them in the models. For now we only use state level stats in the first research question, but the county level data is available for further modeling. 
+For our next step, we will try some other variables and also explore the interaction effects among variables. Since the linear regression does not meet the requirement of constant variance, and the r-squared is only about 0.2, we might choose more flexible and complex models in the future. For example if we had data for years between 2008 and 2013, we could do time series analysis. 
+
+  
+# Appendix
+=======
+```{r, my-fig18,out.width = '90%',echo = FALSE,fig.cap = "convenience store map"}
+knitr::include_graphics('images/tableau_food/2/Dashboard 1.png')
+```
+
+```{r, my-fig5,out.width = '90%',echo = FALSE,fig.cap = "Fast food trend"}
+knitr::include_graphics('images/tableau_food/2/Dashboard 2.png')
+```
+
+```{r, my-fig6,out.width = '90%',echo = FALSE,fig.cap = "wic map"}
+knitr::include_graphics('images/tableau_food/3/Dashboard 1.png')
+```
+
+```{r, my-fig7,out.width = '90%',echo = FALSE,fig.cap = "wic trend"}
+knitr::include_graphics('images/tableau_food/3/Dashboard 2.png')
+```
+
+```{r, my-fig8,out.width = '90%',echo = FALSE,fig.cap = "super center map"}
+knitr::include_graphics('images/tableau_food/4/Dashboard 1.png')
+```
+
+```{r, my-fig9,out.width = '90%',echo = FALSE,fig.cap = "super center trend"}
+knitr::include_graphics('images/tableau_food/4/Dashboard 2.png')
+```
+
+```{r, my-fig10,out.width = '90%',echo = FALSE,fig.cap = "specialized food store map"}
+knitr::include_graphics('images/tableau_food/5/Dashboard 1.png')
+```
+
+```{r, my-fig11,out.width = '90%',echo = FALSE,fig.cap = "specialized food store trend"}
+knitr::include_graphics('images/tableau_food/5/Dashboard 2.png')
+```
+
+```{r, my-fig12,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market map"}
+knitr::include_graphics('images/tableau_food/6/Dashboard 1.png')
+```
+
+```{r, my-fig13,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market trend"}
+knitr::include_graphics('images/tableau_food/6/Dashboard 2.png')
+```
+
+```{r, my-fig14,out.width = '90%',echo = FALSE,fig.cap = "Grocery store map"}
+knitr::include_graphics('images/tableau_food/7/Dashboard 1.png')
+```
+
+```{r, my-fig15,out.width = '90%',echo = FALSE,fig.cap = "Grocery store trend"}
+knitr::include_graphics('images/tableau_food/7/Dashboard 2.png')
+```
+
+```{r, my-fig16,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities map"}
+knitr::include_graphics('images/tableau_food/8/Dashboard 1.png')
+```
+
+```{r, my-fig17,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities trend"}
+knitr::include_graphics('images/tableau_food/8/Dashboard 2.png')
+```
+
+
