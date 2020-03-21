@@ -92,6 +92,8 @@ Obesity rate related:
 
 All the variables listed above are at the county level. However, for some of our problems, we also analyzed our data at the state level as well. Also, we tried to select all the variables per capita or per 1000 population, as we know that this data is highly correlated with the population.
 
+The SNAP and WIC are two different food assistance programs at the county level. SNAP provides recipients the ability to purchase discounted food from a variety of retail establishment while the WIC program focuses on providing specific assistance  to malnourished and impoverished women, children and infants during important developmental stages. Thus WIC is more exclusive than SNAP.
+
 ## Data Limitations
 Although the survey data we have is very rich, it does not provide us data for every year. For example, it only provides us the county level obesity rate for the year 2008 and 2013. Such limitations forced us to narrow down our research question to focus on obesity rate for only those two years. We face the same limitation with variables for local food choices as well as the national free lunch program related variables. We only have the data for national free lunch program eligibility for the year 2009. Therefore, the scale of our analysis is limited to these years due to the lack of data. 
 
@@ -239,22 +241,7 @@ As the data is census level data, it does not seem to be completely randomly col
 
 
 ## Exploratory Data Analysis 
-Using multiple linear regression, we are interested in predicting the Percentage Eligibility of Students in the Free Lunch program (out of the total number of students attending school). The independent variables we are interested in are the following:
-
-  - a
-  - b
-  - c
-  - d
-  - e
-  - f
-  - g
-  - h
-  - i 
-  - j
-  - k
-  - l 
-
-
+Using multiple linear regression, we are interested in predicting the Percentage Eligibility of Students in the Free Lunch program (out of the total number of students attending school). The independent variables we are interested in are listed above. 
 
 ```{r Renaming data, include = FALSE}
 names(data)[4:23] =
@@ -542,6 +529,11 @@ While the residuals look as if they are largely following the assumption of cons
 # Conclusion
 ## Are local food choices associated with the Obesity rates? 
 The adult obesity rate in the US has a significant increase of 1.33% on average from 2008 to 2013. In both years, the access of food choices and fitness facilities per 1000 population, and taxes are highly correlated to the obesity rate: super centers, convenient stores, WIC-authorized store and food taxes have positive effects and grocery stores; specialized food stores, fast food restaurants, farmer’s markets and recreation and fitness facilities are negative associated with it. Besides, the effect of the same independent variable on obesity rate exaggerates from 2008 to 2013.
+
+## Are there any group of factors that predict eligibility in the school free lunch program ?
+Using a linear regression we are able to narrow down on a mix of child poverty-related independent variables as well as some food access variables (grocery stores, full service restaurants, convenience stores, acres of vegetables harvested) as well as some assistance variables (WIC and SNAP beneftis and redemptions) that determine the eligibility of participation in the FLP at the county level. The details of these associations are in the model evaluation section above. We cannot make a causal inference about this regression. 
+
+
 
 # Discussion & Future Work
 Most of the results look reasonable to us, but the effect of access to fast food restaurants is different from our expectation. Intuitively, fast foods are the most high calories among all the food choices we have but the model shows a negative relation with obesity rates. We believe there should be other variables such as income, public welfare affecting the level of obesity rates, but due to the limitation of our dataset, we were not able to add them in the models. For now we only use state level stats in the first research question, but the county level data is available for further modeling. 
