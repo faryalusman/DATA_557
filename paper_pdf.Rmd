@@ -33,7 +33,7 @@ prepared_data <- read_csv("/Users/faru/Documents/BIOSTATS_project/prepared_data.
         PERCHLDPOV10 = col_number(), PERPOV10 = col_number(), 
         RECFACPTH09 = col_number(), SPECSPTH09 = col_number(), 
         SUPERCPTH09 = col_number(), VEG_ACRESPTH07 = col_number()))
-
+food = read.csv("~/data/q1_and_q2.csv")
 census <- read_csv("/Users/faru/Documents/BIOSTATS_project/census.csv")
 data <- sqldf::sqldf("SELECT * FROM prepared_data 
               JOIN census
@@ -42,6 +42,39 @@ data <- data[-c(23,24)]
 
 ```
 
+# Question 2: Are local food choices associated with the Obesity rates? 
+
+	
+### Are the food source variables associated with the obesity rates in 2008/09? 
+
+
+### Are the food source variables associated with the obesity rates in 2013/14? 
+
+The following are the assumptions of the two linear regressions we used:
+Independence:
+A common assumption across all inferential tests is that the observations in the sample are independent from each other. 
+
+Normality:
+We have county level observations of over 3000 rows. As this value is relatively large, the central limit theorem will take effect and the non-normality does not matter. We also checked the residual qq plot for normality.  
+
+Constant Variance for obesity rate:
+We assess the plot of residuals vs fitted values, and it shows clear evidence of non-constant variance. There is clearly a pattern of residuals that is undesirable to us. We used robust standard error to try to correct the non-constant variance problem.
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit2=lm(PCT_OBESE_ADULTS08~ GROCPTH09 +SUPERCPTH09 +CONVSPTH09  + SPECSPTH09 + WICSPTH08 +FFRPTH09 + FMRKTPTH09 + RECFACPTH09, data = food)
+scatter.smooth(fit2$fitted.values,fit2$residuals,cex=0.5,col="gray")
+qqnorm(fit$residuals)
+qqline(fit$residuals)
+```
+
+```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
+par(mfrow=c(1,2),mar=c(5,4,4,1))
+fit=lm(PCT_OBESE_ADULTS13~ GROCPTH14 +SUPERCPTH14 +CONVSPTH14  + SPECSPTH14 + WICSPTH12 +FFRPTH14 + FMRKTPTH16 + RECFACPTH14 +FOOD_TAX14, data = food)
+scatter.smooth(fit$fitted.values,fit$residuals,cex=0.5,col="gray")
+qqnorm(fit$residuals)
+qqline(fit$residuals)
+```
 
 
 # Question 3: Are there any group of factors that predict eligibility in the school free lunch program.
