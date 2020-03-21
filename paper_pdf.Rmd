@@ -702,3 +702,58 @@ For our next step, we will try some other variables and also explore the interac
 
   
 # Appendix
+```{r, my-fig18,out.width = '90%',echo = FALSE,fig.cap = "convenience store map"}
+knitr::include_graphics('/images/tableau_food/2/Dashboard 1.png')
+```
+
+```{r, my-fig5,out.width = '90%',echo = FALSE,fig.cap = "Fast food trend"}
+knitr::include_graphics('/images/tableau_food/2/Dashboard 2.png')
+```
+
+```{r, my-fig6,out.width = '90%',echo = FALSE,fig.cap = "wic map"}
+knitr::include_graphics('/images/tableau_food/3/Dashboard 1.png')
+```
+
+```{r, my-fig7,out.width = '90%',echo = FALSE,fig.cap = "wic trend"}
+knitr::include_graphics('/images/tableau_food/3/Dashboard 2.png')
+```
+
+```{r, my-fig8,out.width = '90%',echo = FALSE,fig.cap = "super center map"}
+knitr::include_graphics('/images/tableau_food/4/Dashboard 1.png')
+```
+
+```{r, my-fig9,out.width = '90%',echo = FALSE,fig.cap = "super center trend"}
+knitr::include_graphics('/images/tableau_food/4/Dashboard 2.png')
+```
+
+```{r, my-fig10,out.width = '90%',echo = FALSE,fig.cap = "specialized food store map"}
+knitr::include_graphics('/images/tableau_food/5/Dashboard 1.png')
+```
+
+```{r, my-fig11,out.width = '90%',echo = FALSE,fig.cap = "specialized food store trend"}
+knitr::include_graphics('/images/tableau_food/5/Dashboard 2.png')
+```
+
+```{r, my-fig12,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market map"}
+knitr::include_graphics('/images/tableau_food/6/Dashboard 1.png')
+```
+
+```{r, my-fig13,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market trend"}
+knitr::include_graphics('/images/tableau_food/6/Dashboard 2.png')
+```
+
+```{r, my-fig14,out.width = '90%',echo = FALSE,fig.cap = "Grocery store map"}
+knitr::include_graphics('/images/tableau_food/7/Dashboard 1.png')
+```
+
+```{r, my-fig15,out.width = '90%',echo = FALSE,fig.cap = "Grocery store trend"}
+knitr::include_graphics('/images/tableau_food/7/Dashboard 2.png')
+```
+
+```{r, my-fig16,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities map"}
+knitr::include_graphics('/images/tableau_food/8/Dashboard 1.png')
+```
+
+```{r, my-fig17,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities trend"}
+knitr::include_graphics('/images/tableau_food/8/Dashboard 2.png')
+```
