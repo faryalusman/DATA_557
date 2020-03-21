@@ -22,7 +22,7 @@ library("ggplot2")
 library("lindia")
 library("gridExtra")
 
-prepared_data <- read_csv("../data/prepared_data.csv", 
+prepared_data <- read_csv("~/data/prepared_data.csv", 
     col_types = cols(CHILDPOVRATE15 = col_number(), 
         CONVSPTH09 = col_number(), FFRPTH09 = col_number(), 
         FSRPTH09 = col_number(), GROCPTH09 = col_number(), 
@@ -34,7 +34,7 @@ prepared_data <- read_csv("../data/prepared_data.csv",
         RECFACPTH09 = col_number(), SPECSPTH09 = col_number(), 
         SUPERCPTH09 = col_number(), VEG_ACRESPTH07 = col_number()))
 food = read.csv("~/data/q1_and_q2.csv")
-census <- read_csv("../data/census.csv")
+census <- read_csv("~/data/census.csv")
 data <- sqldf::sqldf("SELECT * FROM prepared_data 
               JOIN census
               USING(FIPS)")
