@@ -139,7 +139,7 @@ data$`Low access children per thousand` = (data$`Number of children with Low Acc
 ```
 
 ### Data Preparation
-Initially, there are 3140 observations. However, we decide to remove observations that contain null values for Percent eligibility for the Free Lunch Program. This reduces our observations to 3065. Before proceeding to model fitting, we will do some initial data exploration of our variables. 
+Initially, there are 3140 observations. However, we decide to remove observations that contain null values for Percent eligibility for the Free Lunch Program, our dependent variable. This reduces our observations to 3065. Before proceeding to model fitting, we will do some initial data exploration of our variables. 
 
 ### Exploratory Data Analysis 
 Below we have the histogram of percent eligibiltiy in the free lunch program. While it does not follow a Gaussian distribution exactly, it seems to follow it roughly enough that we can attempt the regression. 
@@ -160,7 +160,7 @@ ggplot2::ggplot(data = data, aes(x=data$`Students eligible for FLP per thousand`
 
 This also seems like highly skewed data, which is expected as there will be some outlier counties with more than the usual amount of resources dedicated to the program and thus having close to all of the school-going population eligible for the free lunch program. 
 
-Before we attempt with creating any more regression we should analyze the variables and make sure there is not too much data missing. 
+Based on the comparison of the two histograms, we decide to proceed with the first dependent and attempt a linear regression. Before we jump into regression we should analyze the variables and make sure there is not too much data missing. 
 
 ```{r, include = FALSE}
 subset <- data[c(6:14, 16:17, 19:22, 24:28)]
@@ -187,7 +187,8 @@ data$`Milk price in cents`[is.na(data$`Milk price in cents`)] <- med_milk
 
 ```
 
-After accounting for the missing values, we also want to know which variables are closely related to our two independent variables of ____ and _____. We can do this with a simple correlation heatmap.
+After accounting for the missing values, we also want to know which variables are closely related to Percent Eligibility of the Free Lunch Program. We can do this with a simple correlation heatmap.
+
 
 ```{r fig.height = 10, fig.width = 10, echo = FALSE, message = FALSE}
 library(corrplot)
@@ -197,13 +198,11 @@ M <- cor(subset)
 corrplot(M, type = "full", method  = "color", addrect = 3, mar = c(0,0,0,0), tl.cex = 1, cl.cex = 1, tl.col = "black")
 
 ```
+Thus we can see that we expect there to be a fairly strong positive correlation between Percent Eligibility of the Free Lunch Program with per capita WIC redemptions and SNAP benefits, as well all the poverty variables. Thus we expect these variables to be significant in our regressions. 
 
 
-Thus we can see that we expect there to be a fairly strong positive correlation between Percent Eligibility of the Free Lunch Program with per capita WIC redemptions and SNAP benefits, as well all the poverty variables. Meanwhile when we analyze the Students eligible for Free Lunch Program per thousand variable, we can see that it is similarly correlated with the same variables. Thus we expect these variables to be significant in any regression we attempt. 
-
-
-## Linear Regression 
-We will first attempt a linear regression with Percent of Students eligible for the Free Lunch Program as the dependent variable. 
+## Model Fitting: Linear Regression 
+We will attempt a linear regression with Percent of Students eligible for the Free Lunch Program as the dependent variable and the above variables listed as the independent variables. 
 
 ```{r regression_one, include = FALSE}
 subset_1 <- data[c(6:14, 16:17, 19:22, 24,27:28)]
@@ -314,7 +313,7 @@ Out of the store and restaurant availability variables, it seems that grocery st
 
 Most of our variables are significant with this linear regression, bringing the Multiple R-squared to a 75.96% and adjusted R squared not far behind at 75.82%.
 
-### Goodness of fit: Hypothesis Test 
+### Model Evaulation: Hypothesis Test 
 We want to test the hypothesis that the above model is more useful than a null model. We can let our null hypothesis be $$H_{0} : \text{Model with no independent variables fits data better than linear regression model}$$
 
 
@@ -362,7 +361,7 @@ As the F statistic is large and the p value is smaller than our significance lev
 However, we must be careful with making too many hypotheses as our probability of reaching a false positive or our type 1 error rate increases for every additional hypothesis we make.
 
 
-### Goodness of fit plots
+### Model Evaluation: Goodness of fit plots
 It is important to analzye the assumptions of linear regression and see if our model meets them. 
 
 ```{r, echo = FALSE}
