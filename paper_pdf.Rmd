@@ -93,7 +93,29 @@ Although the survey data we have is very rich, it does not provide us data for e
 ## Incomplete and missing value
 Originally we intended to consider more local food choices such as the berry farm and orchard farm in our analysis. However, there are too many missing values at the county level. Thus we decided to not use those variables. There are not many other missing values in the variables of our choice, and we just simply dropped the observations that contain null values. Plus, for the obesity rate problem, we aggregated all the county-level data to calculate the state-level data. If time permits in the future, we will probably conduct a more detailed research using county-level data on the obesity problem. 
 
-Summary statistics of all the local stores/ food choices variables (on county level):
+## Summary statistics of all the local stores/ food choices variables (on county level)
+```{r, my-fig,out.width = '80%', fig.cap = "descriptive statistics", echo = FALSE}
+knitr::include_graphics('/images/descriptive_food/descriptive.png')
+```
+As can be seen from the table, Convenience stores got very high values of availabilities per capita, while Supercenters & Club Stores, Specialized Food Stores and Farmers’ Markets got relatively low values.
+
+## Trends of local stores/ food choices
+Convenience Store (rest of food choices in appendix): 
+```{r, my-fig2,out.width = '90%',echo = FALSE,fig.cap = "convenience store map"}
+knitr::include_graphics('/images/tableau_food/1/Dashboard 1.png')
+```
+
+```{r, my-fig3,out.width = '90%',echo = FALSE,fig.cap = "convenience store trend"}
+knitr::include_graphics('/images/tableau_food/1/Dashboard 2.png')
+```
+
+# Statistical Methods
+## Are local food choices associated with the Obesity rates? 
+Based on the boxplot below, there is a clear trend of an increasing median and range of obesity rate in the US. Therefore, we first want to determine if there is a significant difference in adult obesity rate between 2008 and 2013. To answer this question, we performed a two sample paired t-test, since we only have two years’ of data for each state. There are no extreme outliers and due to the large sample size, the obesity rates are approximately normally distributed, so the assumptions of paired t-test are met. 
+
+```{r, my-fig4,out.width = '90%',echo = FALSE,fig.cap = "Obesity rate 2008 and 2013"}
+knitr::include_graphics('/images/descriptive_food/obesity.png')
+```
 
 
 # Question 2: Are local food choices associated with the Obesity rates? 
