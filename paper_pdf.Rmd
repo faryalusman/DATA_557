@@ -95,7 +95,7 @@ Originally we intended to consider more local food choices such as the berry far
 
 ## Summary statistics of all the local stores/ food choices variables (on county level)
 ```{r, my-fig,out.width = '80%', fig.cap = "descriptive statistics", echo = FALSE}
-knitr::include_graphics('/images/descriptive_food/descriptive.png')
+knitr::include_graphics('images/descriptive_food/descriptive.png')
 ```
 As can be seen from the table, Convenience stores got very high values of availabilities per capita, while Supercenters & Club Stores, Specialized Food Stores and Farmers’ Markets got relatively low values.
 
@@ -106,7 +106,7 @@ knitr::include_graphics('/images/tableau_food/1/Dashboard 1.png')
 ```
 
 ```{r, my-fig3,out.width = '90%',echo = FALSE,fig.cap = "convenience store trend"}
-knitr::include_graphics('/images/tableau_food/1/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/1/Dashboard 2.png')
 ```
 
 # Statistical Methods
@@ -114,7 +114,7 @@ knitr::include_graphics('/images/tableau_food/1/Dashboard 2.png')
 Based on the boxplot below, there is a clear trend of an increasing median and range of obesity rate in the US. Therefore, we first want to determine if there is a significant difference in adult obesity rate between 2008 and 2013. To answer this question, we performed a two sample paired t-test, since we only have two years’ of data for each state. There are no extreme outliers and due to the large sample size, the obesity rates are approximately normally distributed, so the assumptions of paired t-test are met. 
 
 ```{r, my-fig4,out.width = '90%',echo = FALSE,fig.cap = "Obesity rate 2008 and 2013"}
-knitr::include_graphics('/images/descriptive_food/obesity.png')
+knitr::include_graphics('images/descriptive_food/obesity.png')
 ```
 
 Are the food source variables associated with the obesity rates in 2008/09? 
@@ -703,57 +703,57 @@ For our next step, we will try some other variables and also explore the interac
   
 # Appendix
 ```{r, my-fig18,out.width = '90%',echo = FALSE,fig.cap = "convenience store map"}
-knitr::include_graphics('/images/tableau_food/2/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/2/Dashboard 1.png')
 ```
 
 ```{r, my-fig5,out.width = '90%',echo = FALSE,fig.cap = "Fast food trend"}
-knitr::include_graphics('/images/tableau_food/2/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/2/Dashboard 2.png')
 ```
 
 ```{r, my-fig6,out.width = '90%',echo = FALSE,fig.cap = "wic map"}
-knitr::include_graphics('/images/tableau_food/3/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/3/Dashboard 1.png')
 ```
 
 ```{r, my-fig7,out.width = '90%',echo = FALSE,fig.cap = "wic trend"}
-knitr::include_graphics('/images/tableau_food/3/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/3/Dashboard 2.png')
 ```
 
 ```{r, my-fig8,out.width = '90%',echo = FALSE,fig.cap = "super center map"}
-knitr::include_graphics('/images/tableau_food/4/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/4/Dashboard 1.png')
 ```
 
 ```{r, my-fig9,out.width = '90%',echo = FALSE,fig.cap = "super center trend"}
-knitr::include_graphics('/images/tableau_food/4/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/4/Dashboard 2.png')
 ```
 
 ```{r, my-fig10,out.width = '90%',echo = FALSE,fig.cap = "specialized food store map"}
-knitr::include_graphics('/images/tableau_food/5/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/5/Dashboard 1.png')
 ```
 
 ```{r, my-fig11,out.width = '90%',echo = FALSE,fig.cap = "specialized food store trend"}
-knitr::include_graphics('/images/tableau_food/5/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/5/Dashboard 2.png')
 ```
 
 ```{r, my-fig12,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market map"}
-knitr::include_graphics('/images/tableau_food/6/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/6/Dashboard 1.png')
 ```
 
 ```{r, my-fig13,out.width = '90%',echo = FALSE,fig.cap = "Farmer's market trend"}
-knitr::include_graphics('/images/tableau_food/6/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/6/Dashboard 2.png')
 ```
 
 ```{r, my-fig14,out.width = '90%',echo = FALSE,fig.cap = "Grocery store map"}
-knitr::include_graphics('/images/tableau_food/7/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/7/Dashboard 1.png')
 ```
 
 ```{r, my-fig15,out.width = '90%',echo = FALSE,fig.cap = "Grocery store trend"}
-knitr::include_graphics('/images/tableau_food/7/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/7/Dashboard 2.png')
 ```
 
 ```{r, my-fig16,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities map"}
-knitr::include_graphics('/images/tableau_food/8/Dashboard 1.png')
+knitr::include_graphics('images/tableau_food/8/Dashboard 1.png')
 ```
 
 ```{r, my-fig17,out.width = '90%',echo = FALSE,fig.cap = "Recreational facilities trend"}
-knitr::include_graphics('/images/tableau_food/8/Dashboard 2.png')
+knitr::include_graphics('images/tableau_food/8/Dashboard 2.png')
 ```
