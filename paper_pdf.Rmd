@@ -22,7 +22,7 @@ library("ggplot2")
 library("lindia")
 library("gridExtra")
 
-prepared_data <- read_csv("~/data/prepared_data.csv", 
+prepared_data <- read_csv("data/prepared_data.csv", 
     col_types = cols(CHILDPOVRATE15 = col_number(), 
         CONVSPTH09 = col_number(), FFRPTH09 = col_number(), 
         FSRPTH09 = col_number(), GROCPTH09 = col_number(), 
@@ -33,8 +33,8 @@ prepared_data <- read_csv("~/data/prepared_data.csv",
         PERCHLDPOV10 = col_number(), PERPOV10 = col_number(), 
         RECFACPTH09 = col_number(), SPECSPTH09 = col_number(), 
         SUPERCPTH09 = col_number(), VEG_ACRESPTH07 = col_number()))
-food = read.csv("~/data/q1_and_q2.csv")
-census <- read_csv("~/data/census.csv")
+food = read.csv("/data/q1_and_q2.csv")
+census <- read_csv("/data/census.csv")
 data <- sqldf::sqldf("SELECT * FROM prepared_data 
               JOIN census
               USING(FIPS)")
@@ -150,7 +150,7 @@ ggplot2::ggplot(data = data, aes(x=`% of students eligible for FLP`))+
 ```
 We can see that the histogram is not exactly normal but not so far off that we cannot attempt the regression. 
 
-We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per hundred thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (estimated using census methods) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
+We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per hundred thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (available through census data via the Food Environment Atlas) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population and multiply by 100,000 to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
 
 ```{r, warning = FALSE, echo  = FALSE}
 # ggplot of school lunch eligibility in percent data 
@@ -386,8 +386,8 @@ quant_plot
 While the residuals look as if they are largely following the assumption of constant variance of residuals, there are still some outliers for 
 larger values where the predictions get more extreme. This shows an error with the model assumptions. In addition, the quantile-quantile plot's deviating tails indicate the presence of non-normality in error residuals as well. While the latter can be accepted if we consider our sample to be large enough, the former violates the validity of the model
 
-
-
+## Model Fitting: Poisson regression 
+Now we are interested in seeing the relationship with the same independent variables but with the dependent variable of Count Eligi
 
 # End of writeup
 ------------------------------------------------------------------------------------------------------
