@@ -150,7 +150,7 @@ ggplot2::ggplot(data = data, aes(x=`% of students eligible for FLP`))+
 ```
 We can see that the histogram is not exactly normal but not so far off that we cannot attempt the regression. 
 
-We are also interested in another related dependent variable: Count of children eligible for the free lunch program per hundred thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (estimated using census methods) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
+We are also interested in another potential dependent variable: Count of children eligible for the free lunch program per hundred thousand. This is calculated by the authors by first finding out the total student population by multiplying the proportion of population aged under 18 years old with the population of the county (estimated using census methods) in 2018. Next, the number of students are multiplied by the Percent Eligibility for the Free Lunch Program to find the Count of children eligible for the Free Lunch Program. The final step is to divide this figure by the county population to get the Count of Children eligible for the Free Lunch Program per thousand.  One key assumption and thus future model limitation here is that in the absence of better data, we assume that the population under 18 is equal to the population of students of school going age. 
 
 ```{r, warning = FALSE, echo  = FALSE}
 # ggplot of school lunch eligibility in percent data 
@@ -217,7 +217,8 @@ stargazer::stargazer(linear_model_1, single.row = FALSE, no.space = TRUE)
 
 ```
 
- However, we also have to keep in mind that counties receive their resources from the states they are in, thus observations within states will be correlated with each other. Thus, we will report the robust standard error version of this model.
+ However, we also have to keep in mind that we are not sure the model assumption of constant error variance will hold. Thus we will also report the robust standard error estimates of this model which provide unbiased standard error estimates. 
+ 
 
 ```{r, warning = FALSE, include = FALSE}
 cov1  <- vcovHC(linear_model_1, type = "HC1")
