@@ -125,7 +125,7 @@ Based on the boxplot below, there is a clear trend of an increasing median and r
 knitr::include_graphics('images/descriptive_food/obesity.png')
 ```
 
-Are the food source variables associated with the obesity rates in 2008/09? 
+## Are the food source variables associated with the obesity rates in 2008/09? 
 
 Due to the limitation that we only have data for 2008 and 2013, time-series analysis is not applicable, so we could only perform linear models on these two years independently. The dataset contains three versions of all the variables, the absolute counts in each year, count per thousand capita in each year and the percentage change from 2008 to 2013. We first ran models on both counts and percentages of access to food choices per 1000 population. However, since the access to stores is highly correlated to the state population, we decided to use only the percentage model in our research questions.  
 For the first question, the response variable is obesity rate in 2008, and the predictor variables are the following food stores and facilities in each state: grocery stores, convenience stores, fast-food restaurants, WIC-authorized stores, supercenters & club stores, specialized food stores, farmers' markets, recreation & fitness facilities. 
@@ -136,13 +136,11 @@ We ran the same regression model on obesity rate with all the predictor variable
 
 
 The following are the assumptions of linear regressions we used:
-Independence: 
+ - Independence: 
 The county level data we used do not come froma simple rample sample. Thus we have to assume the independence in our data. 
-
-Normality:
+- Normality:
 We have county level observations of over 3000 rows. As this value is relatively large, the central limit theorem will take effect and the non-normality does not matter. We also checked the residual qq plot for normality.  
-
-Constant Variance for obesity rate:
+- Constant Variance for obesity rate:
 We assess the plots of residuals vs fitted values of our linear models, and they show clear evidence of non-constant variance. The first plot is the residual plot for obesity rate in 2008/09, and the second plot is for obesity rate in 2013/14. There is clearly a pattern of residuals that is undesirable to us. We used robust standard error to try to correct the non-constant variance problem.
 
 ```{r,echo=F,fig.height=6,fig.width=9,dev.args=list(pointsize=10)}
@@ -163,6 +161,7 @@ qqline(fit$residuals)
 
 #  Results
 The results of our analyses for the five questions posed are detailed below.
+
 ### Are local food choices associated with the Obesity rates? 
 ###T-test result:
 t = 58.258, df = 3136, p-value < 2.2e-16
